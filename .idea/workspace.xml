@@ -3,8 +3,33 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="2aa7d6b7-42e0-4198-8161-d795e1f462a7" name="Default Changelist" comment="" />
+    <list default="true" id="2aa7d6b7-42e0-4198-8161-d795e1f462a7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/factories/UserFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/factories/UserFactory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Feature/ExampleTest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Unit/ExampleTest.php" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,6 +38,9 @@
   <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
@@ -164,22 +192,35 @@
       <workItem from="1611248362349" duration="2825000" />
       <workItem from="1611398749400" duration="3713000" />
       <workItem from="1611409464202" duration="10342000" />
-      <workItem from="1611424815480" duration="8715000" />
+      <workItem from="1611424815480" duration="8800000" />
+      <workItem from="1611502924681" duration="417000" />
+      <workItem from="1611608862323" duration="5403000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="WindowStateProjectService">
     <state x="2353" y="122" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1611251307247">
       <screen x="1680" y="25" width="1920" height="1055" />
     </state>
     <state x="2353" y="122" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/1680.25.1920.1055/0.25.1680.962@1680.25.1920.1055" timestamp="1611251307247" />
-    <state x="2305" y="259" width="670" height="676" key="search.everywhere.popup" timestamp="1611427691760">
+    <state x="2305" y="259" width="670" height="676" key="search.everywhere.popup" timestamp="1611614148520">
       <screen x="1680" y="25" width="1920" height="1055" />
     </state>
     <state x="547" y="238" width="670" height="617" key="search.everywhere.popup/0.25.1680.962@0.25.1680.962" timestamp="1611404104853" />
-    <state x="2305" y="259" width="670" height="676" key="search.everywhere.popup/1680.25.1920.1055/0.25.1680.962@1680.25.1920.1055" timestamp="1611427691760" />
+    <state x="2305" y="259" width="670" height="676" key="search.everywhere.popup/1680.25.1920.1055/0.25.1680.962@1680.25.1920.1055" timestamp="1611614148520" />
   </component>
 </project>

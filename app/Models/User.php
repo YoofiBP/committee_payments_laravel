@@ -32,7 +32,8 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'is_verified',
-        'email_verified_at'
+        'email_verified_at',
+        'is_admin'
     ];
 
     /**
