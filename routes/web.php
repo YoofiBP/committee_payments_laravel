@@ -14,6 +14,6 @@ use App\Http\Controllers\API\UserController;
 |
 */
 
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/logout', [UserController::class, 'logout']);
+Route::post('/login', [UserController::class, 'login'])->name('user.login');
+Route::post('/logout', [UserController::class, 'logout'])->name('user.logout');;
 
