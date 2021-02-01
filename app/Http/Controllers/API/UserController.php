@@ -33,6 +33,7 @@ class UserController extends Controller
      * @param  StoreUserRequest  $request
      * @return JsonResponse
      */
+    //TODO: Enable authentication when user logs in
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
