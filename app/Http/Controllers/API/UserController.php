@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\DuplicateUserException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
@@ -30,13 +31,18 @@ class UserController extends Controller
     /**
      * Store a user in storage.
      *
-     * @param  StoreUserRequest  $request
+     * @param StoreUserRequest $request
      * @return JsonResponse
+     * @throws DuplicateUserException
      */
     //TODO: Enable authentication when user logs in
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
+        $user = User::where('email', '=', $data["email"])->first();
+        if($user !== null){
+            throw new DuplicateUserException('User already exists');
+        }
         $user = User::create($data);
         return response()->json(new UserResource($user),201);
     }

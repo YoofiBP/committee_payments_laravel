@@ -55,8 +55,7 @@ class UserTest extends TestCase
         $newUser = $this->validUser;
         $newUser["email"] = $user->email;
         $response = $this->signUpUser($newUser);
-        //TODO: Enable Error handling to ensure that 400 status is returned when user email is already present
-        $response->assertStatus(500);
+        $response->assertStatus(400);
         $this->assertDatabaseCount('users', 1);
     }
 
