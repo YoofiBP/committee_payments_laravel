@@ -41,7 +41,7 @@ class UserController extends Controller
         $data = $request->validated();
         $user = User::where('email', '=', $data["email"])->first();
         if($user !== null){
-            throw new DuplicateUserException('User already exists');
+            throw new DuplicateUserException();
         }
         $user = User::create($data);
         return response()->json(new UserResource($user),201);
