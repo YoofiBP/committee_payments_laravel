@@ -6,7 +6,6 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -23,7 +22,7 @@ class UserTest extends TestCase
     }
 
     public function signUpUser(array $user) {
-        return $this->withHeader('Accept', 'application/json')->post(route('users.store'),$user);
+        return $this->withHeader('Accept', 'application/json')->post(route('user.signup'),$user);
     }
 
     public function loginUser(array $user){
