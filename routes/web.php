@@ -14,6 +14,7 @@ use App\Http\Controllers\API\UserController;
 |
 */
 
+Route::post('/signup', [UserController::class, 'signup'])->name('user.signup');
 Route::post('/login', [UserController::class, 'login'])->name('user.login');
 Route::post('/logout', [UserController::class, 'logout'])->name('user.logout');;
 

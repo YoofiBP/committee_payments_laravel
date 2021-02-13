@@ -5,16 +5,27 @@ namespace App\Http\Controllers\API;
 use App\Exceptions\DuplicateUserException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\UserServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function __construct(){
-        $this->middleware(['web','auth:sanctum'])->except(['login','store']);
+    /**
+     * @var UserServiceInterface
+     */
+    private $userService;
+
+    public function __construct(UserServiceInterface $userService){
+        $this->middleware(['web','auth:sanctum'])->except(['login','signup']);
+        $this->userService = $userService;
+        $this->authorizeResource(User::class, 'user');
     }
 
     /**
@@ -25,41 +36,40 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json($request->user(),200);
+        $users = $this->userService->all();
+        return response()->json($users, 200);
     }
 
     /**
      * Store a user in storage.
      *
      * @param StoreUserRequest $request
-     * @return JsonResponse
-     * @throws DuplicateUserException
+     * @return Response;
      */
-    //TODO: Enable authentication when user logs in
-    public function store(StoreUserRequest $request)
+    public function signup(StoreUserRequest $request)
     {
         $data = $request->validated();
-        $user = User::where('email', '=', $data["email"])->first();
-        if($user !== null){
-            throw new DuplicateUserException();
+        if($user = $this->userService->add($data)){
+            Auth::guard('web')->login($user);
+            return response(new UserResource($user), 201);
+        } else {
+            return response("An error occurred", 500);
         }
-        $user = User::create($data);
-        return response()->json(new UserResource($user),201);
     }
 
     /**
      * Login existing user
      *
      * @param Request $request
-     * @return JsonResponse
+     * @return Response
      */
     public function login(Request $request){
         $credentials = $request->only('email', 'password');
-        if(Auth::guard('web')->attempt($credentials, true)){
+        if($this->userService->validateCredentials($credentials)){
             $request->session()->regenerate();
-           return response()->json(Auth::user(),200);
+           return response(new UserResource(Auth::user()), 200);
         }else{
-            return response()->json(["message" => "Invalid credentials"],401);
+            return response(["message" => "Invalid credentials"],401);
         }
     }
 
@@ -80,33 +90,38 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param User $user
-     * @return void
+     * @return JsonResponse
      */
     public function show(User $user)
     {
-
+        return response()->json($user,200);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param UpdateUserRequest $request
      * @param User $user
-     * @return void
+     * @return JsonResponse
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $data = $request->validated();
+        $newUser = $this->userService->update($user, $data);
+        return response()->json($newUser, 200);
     }
-
+//TODO: Implement policies to prevent updating user that is not current authenticated user
     /**
      * Remove the specified resource from storage.
      *
      * @param User $user
-     * @return void
+     * @return JsonResponse
      */
     public function destroy(User $user)
     {
-        //
+        $this->userService->delete($user);
+        return response()->json(["message"=>"Delete Successful"],200);
     }
+
+    //TODO: Implement policies to prevent deleting user that is not current authenticated user
 }
