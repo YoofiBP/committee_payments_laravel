@@ -50,6 +50,9 @@ class User extends Authenticatable
         'is_admin' => false,
         'total_contribution' => 0
     ];
+    /**
+     * @var mixed
+     */
 
     public function setPasswordAttribute($value){
         $this->attributes['password'] = password_hash($value, PASSWORD_DEFAULT);
@@ -57,5 +60,9 @@ class User extends Authenticatable
 
     public function setPhoneNumberAttribute($value){
         $this->attributes['phone_number'] = trim(str_replace(' ', '', $value));
+    }
+
+    public function isAdministrator(){
+        return $this->attributes["is_admin"];
     }
 }

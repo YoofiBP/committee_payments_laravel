@@ -8,9 +8,8 @@ use App\Exceptions\DuplicateUserException;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use phpDocumentor\Reflection\Types\Boolean;
 
-class UserService implements UserServiceInterface
+class EloquentUserService implements UserServiceInterface
 {
 
     public function add(array $attributes)
@@ -38,5 +37,20 @@ class UserService implements UserServiceInterface
     {
         $user->fill($data)->save();
         return $user->refresh();
+    }
+
+    public function delete(Model $user)
+    {
+        try {
+            return $user->delete();
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+
+    public function all()
+    {
+        return User::all();
     }
 }

@@ -25,6 +25,7 @@ class UserController extends Controller
     public function __construct(UserServiceInterface $userService){
         $this->middleware(['web','auth:sanctum'])->except(['login','signup']);
         $this->userService = $userService;
+        $this->authorizeResource(User::class, 'user');
     }
 
     /**
@@ -35,7 +36,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json($request->user(),200);
+        $users = $this->userService->all();
+        return response()->json($users, 200);
     }
 
     /**
@@ -88,11 +90,11 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param User $user
-     * @return void
+     * @return JsonResponse
      */
     public function show(User $user)
     {
-
+        return response()->json($user,200);
     }
 
     /**
@@ -113,10 +115,13 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param User $user
-     * @return void
+     * @return JsonResponse
      */
     public function destroy(User $user)
     {
-        //
+        $this->userService->delete($user);
+        return response()->json(["message"=>"Delete Successful"],200);
     }
+
+    //TODO: Implement policies to prevent deleting user that is not current authenticated user
 }
