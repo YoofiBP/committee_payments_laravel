@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 
@@ -18,3 +19,8 @@ Route::post('/signup', [UserController::class, 'signup'])->name('user.signup');
 Route::post('/login', [UserController::class, 'login'])->name('user.login');
 Route::post('/logout', [UserController::class, 'logout'])->name('user.logout');;
 
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return response()->json(["message" => "Email verified"], 200);
+})->middleware(['auth', 'signed'])->name('verification.verify');

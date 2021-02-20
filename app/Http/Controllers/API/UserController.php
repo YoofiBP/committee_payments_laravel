@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Exceptions\DuplicateUserException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserServiceInterface;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,10 +30,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index()
     {
         $users = $this->userService->all();
         return response()->json($users, 200);
@@ -50,6 +48,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
         if($user = $this->userService->add($data)){
+            event(new Registered($user));
             Auth::guard('web')->login($user);
             return response(new UserResource($user), 201);
         } else {
@@ -110,7 +109,6 @@ class UserController extends Controller
         $newUser = $this->userService->update($user, $data);
         return response()->json($newUser, 200);
     }
-//TODO: Implement policies to prevent updating user that is not current authenticated user
     /**
      * Remove the specified resource from storage.
      *
@@ -123,5 +121,4 @@ class UserController extends Controller
         return response()->json(["message"=>"Delete Successful"],200);
     }
 
-    //TODO: Implement policies to prevent deleting user that is not current authenticated user
 }

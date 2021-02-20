@@ -18,4 +18,6 @@ interface UserServiceInterface
     public function delete(Model $user);
 
     public function all();
+
+    public function updateContribution(Model $user, array $contribution);
 }

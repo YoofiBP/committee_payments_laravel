@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Exceptions\DuplicateUserException;
 use App\Models\User;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -52,5 +53,10 @@ class EloquentUserService implements UserServiceInterface
     public function all()
     {
         return User::all();
+    }
+
+    public function updateContribution(Authenticatable | Model $user, array $contribution)
+    {
+       //
     }
 }

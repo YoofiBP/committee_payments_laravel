@@ -225,4 +225,6 @@ class UserTest extends TestCase
         $response->assertJson(["email" => $this->nonAdminUser->email, "name" => $this->nonAdminUser->name]);
     }
 
+    //TODO: Add test for verified and unverified users
+
 }
