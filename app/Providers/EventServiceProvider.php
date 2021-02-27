@@ -22,7 +22,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         Contributed::class => [
             UpdateContributionNotification::class
-        ]
+        ],
     ];
 
     /**

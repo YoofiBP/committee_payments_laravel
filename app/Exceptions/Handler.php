@@ -45,7 +45,7 @@ class Handler extends ExceptionHandler
         if($e instanceof ModelNotFoundException){
             return response( ['message' => 'Entry for '.str_replace("App\\Models\\", '', $e->getModel()).' not found!'],400);
         }
-        if($e instanceof QueryException){
+        if($e instanceof QueryException && env('APP_ENV') === 'production'){
             return response(['message' => "Something went wrong"],500);
         }
         return parent::render($request, $e);

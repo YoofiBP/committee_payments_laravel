@@ -7,7 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Services\UserServiceInterface;
+use App\Services\Interfaces\UserServiceInterface;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,10 +19,10 @@ class UserController extends Controller
     /**
      * @var UserServiceInterface
      */
-    private $userService;
+    private UserServiceInterface $userService;
 
     public function __construct(UserServiceInterface $userService){
-        $this->middleware(['web','auth:sanctum'])->except(['login','signup']);
+        $this->middleware(['web','auth:sanctum','verified'])->except(['login','signup']);
         $this->userService = $userService;
         $this->authorizeResource(User::class, 'user');
     }
@@ -48,7 +48,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
         if($user = $this->userService->add($data)){
-            event(new Registered($user));
+//            event(new Registered($user));
             Auth::guard('web')->login($user);
             return response(new UserResource($user), 201);
         } else {

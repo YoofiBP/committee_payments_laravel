@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Exceptions\DuplicateUserException;
 use App\Models\User;
+use App\Services\Interfaces\UserServiceInterface;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;

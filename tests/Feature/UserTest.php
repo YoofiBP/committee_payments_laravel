@@ -13,15 +13,18 @@ class UserTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    private $adminUser, $nonAdminUser, $validUser;
+    private $adminUser, $nonAdminUser, $nonVerifiedUser, $setUpDBCount;
+    private array $validUser;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->setUpFaker();
         $this->adminUser = User::factory()->create(["is_admin" => true]);
+        $this->nonVerifiedUser = User::factory()->create(["email_verified_at" => null, "is_admin" => true]);;//given admin capabilities to test email verification middleware
         $this->nonAdminUser = User::factory()->create();
         $this->validUser = ["name" => $this->faker->name, "email" => $this->faker->email, "password" => "Dilweed86!", "phone_number" => "+233248506381"];
+        $this->setUpDBCount = User::all()->count();
     }
 
     public function signUpUser(array $user)
@@ -66,7 +69,7 @@ class UserTest extends TestCase
         $newUser["email"] = $this->adminUser->email;
         $response = $this->signUpUser($newUser);
         $response->assertStatus(400);
-        $this->assertDatabaseCount('users', 2);
+        $this->assertDatabaseCount('users', $this->setUpDBCount); //count hasn't changed
     }
 
     public function testShouldReturn_422WhenRequiredFieldsAreMissing()
@@ -153,6 +156,12 @@ class UserTest extends TestCase
         $this->assertDatabaseMissing("users", ["id" => $this->adminUser->id, "email" => $newEmail]);
     }
 
+    public function testShouldNotAllowUserToUpdateProfileIfNotVerified(){
+        $newEmail = "newemail@gmail.com";
+        $response = $this->updateUser($this->nonVerifiedUser->id, ['email' => $newEmail], $this->nonVerifiedUser);
+        $response->assertStatus(403);
+    }
+
     public function testShouldAllowUserToUpdateProfileThatIsNotTheirsIfAdmin()
     {
         $newEmail = "newemail@gmail.com";
@@ -183,6 +192,11 @@ class UserTest extends TestCase
         $this->assertDatabaseHas("users", ["id" => $this->adminUser->id]);
     }
 
+    public function testShouldNotAllowUserToDeleteProfileIfNotVerified(){
+        $response = $this->actingAs($this->nonVerifiedUser)->withHeader('Accept', 'application/json')->delete(route('users.destroy', ["user" => $this->nonVerifiedUser->id]));
+        $response->assertStatus(403);
+    }
+
     public function testShouldAllowUserToDeleteProfileThatIsNotTheirsIfAdmin()
     {
         $response = $this->actingAs($this->adminUser)->withHeader('Accept', 'application/json')->delete(route('users.destroy', ["user" => $this->nonAdminUser->id]));
@@ -195,6 +209,11 @@ class UserTest extends TestCase
         $response = $this->actingAs($this->nonAdminUser)->withHeader('Accept', 'application/json')->get(route('users.index'));
         $response->assertStatus(403);
         $response->assertJsonStructure(['message']);
+    }
+
+    public function testShouldNotAllowAdminUserToViewAllUsersIfNotVerified(){
+        $response = $this->actingAs($this->nonVerifiedUser)->withHeader('Accept', 'application/json')->get(route('users.index'));
+        $response->assertStatus(403);
     }
 
     public function testShouldAllowUserToViewAllUsersIfAdmin()
@@ -225,6 +244,9 @@ class UserTest extends TestCase
         $response->assertJson(["email" => $this->nonAdminUser->email, "name" => $this->nonAdminUser->name]);
     }
 
-    //TODO: Add test for verified and unverified users
+    public function testShouldNotAllowUserToGetSpecificProfileIfNotVerified(){
+        $response = $this->actingAs($this->nonVerifiedUser)->withHeader('Accept', 'application/json')->get(route('users.show',["user" => $this->nonVerifiedUser->id]));
+        $response->assertStatus(403);
+    }
 
 }
