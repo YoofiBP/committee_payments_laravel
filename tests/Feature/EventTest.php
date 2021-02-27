@@ -34,7 +34,7 @@ class EventTest extends TestCase
         $this->setUpDBCount = Event::all()->count();
     }
 
-    public function createEvent(array $event, Authenticatable $actingUser){
+    public function createEvent(Authenticatable $actingUser, array $event){
         return $this->actingAs($actingUser)->withHeader('Accept', 'application/json')->post(route('events.store'), $event);
     }
 
@@ -46,9 +46,17 @@ class EventTest extends TestCase
         return $this->actingAs($actingUser)->withHeader('Accept', 'application/json')->get(route('events.show', ['event' => $eventId]));
     }
 
+    public function deleteEvent(Authenticatable $actingUser, int $eventId){
+        return $this->actingAs($actingUser)->withHeader('Accept', 'application/json')->delete(route('events.show', ['event' => $eventId]));
+    }
+
+    public function updateEvent(Authenticatable $actingUser, array $event, int $eventId){
+        return $this->actingAs($actingUser)->withHeader('Accept', 'application/json')->patch(route('events.show', ['event' => $eventId]), $event);
+    }
+
     public function  testShouldCreateEventSuccessfully(){
         $event  = $this->validEvent;
-        $response = $this->createEvent($event, $this->adminUser);
+        $response = $this->createEvent($this->adminUser, $event,);
         $response->assertStatus(201);
         $this->assertDatabaseHas('events', ["name" => $event['name'], "venue" => $event["venue"], "event_date" =>  $event['event_date']]);
     }
@@ -56,32 +64,32 @@ class EventTest extends TestCase
     public function testShouldReturn_422WhenRequiredFieldsAreMissing(){
         $eventWithoutName = $this->validEvent;
         unset($eventWithoutName['name']);
-        $response = $this->createEvent($eventWithoutName, $this->adminUser);
+        $response = $this->createEvent($this->adminUser, $eventWithoutName);
         $response->assertStatus(422);
         $this->assertDatabaseCount('events', $this->setUpDBCount);
 
         $eventWithoutVenue = $this->validEvent;
         unset($eventWithoutVenue['venue']);
-        $response = $this->createEvent($eventWithoutVenue, $this->adminUser);
+        $response = $this->createEvent($this->adminUser, $eventWithoutVenue);
         $response->assertStatus(422);
         $this->assertDatabaseCount('events', $this->setUpDBCount);
 
         $eventWithoutDate = $this->validEvent;
         unset($eventWithoutDate['event_date']);
-        $response = $this->createEvent($eventWithoutDate, $this->adminUser);
+        $response = $this->createEvent($this->adminUser, $eventWithoutDate);
         $response->assertStatus(422);
         $this->assertDatabaseCount('events', $this->setUpDBCount);
 
         $eventWithoutFlyer = $this->validEvent;
         unset($eventWithoutFlyer['flyer']);
-        $response = $this->createEvent($eventWithoutFlyer, $this->adminUser);
+        $response = $this->createEvent($this->adminUser, $eventWithoutFlyer);
         $response->assertStatus(422);
         $this->assertDatabaseCount('events', $this->setUpDBCount);
     }
 
     public function testShouldNotAllowNonAdminUserToCreateEvent(){
         $event  = $this->validEvent;
-        $response = $this->createEvent($event, $this->nonAdminUser);
+        $response = $this->createEvent($this->nonAdminUser, $event);
         $response->assertStatus(403);
         $this->assertDatabaseMissing('events', ["name" => $event['name'], "venue" => $event["venue"], "event_date" => date_create_from_format(config('constants.date_format'), $event['event_date'])]);
     }
@@ -120,5 +128,30 @@ class EventTest extends TestCase
         $response->assertJsonMissing(["total_contribution" => "0"]);
     }
 
+    public function testShouldDeleteEventSuccessfully(){
+        $response = $this->deleteEvent($this->adminUser, $this->setUpEvent->id);
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('events', ["id" => $this->setUpEvent->id,"name" => $this->setUpEvent->name]);
+    }
+
+    public function testShouldNotDeleteEventIfNotAdmin(){
+        $response = $this->deleteEvent($this->nonAdminUser, $this->setUpEvent->id);
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('events', ["id" => $this->setUpEvent->id,"name" => $this->setUpEvent->name]);
+    }
+
+    public function testShouldUpdateEventSuccessfully(){
+        $newEvent = ['name' => "UpdatedEvent"];
+        $response = $this->updateEvent($this->adminUser, $newEvent, $this->setUpEvent->id);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('events', ["id" => $this->setUpEvent->id, "name" => $newEvent['name']]);
+    }
+
+    public function testShouldNotUpdateEventIfNotAdmin(){
+        $newEvent = ['name' => "UpdatedEvent"];
+        $response = $this->updateEvent($this->nonAdminUser, $newEvent, $this->setUpEvent->id);
+        $response->assertStatus(403);
+        $this->assertDatabaseMissing('events', ["id" => $this->setUpEvent->id, "name" => $newEvent['name']]);
+    }
 
 }

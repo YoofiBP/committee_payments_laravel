@@ -34,4 +34,15 @@ class EventController extends Controller
     public function show(Event $event){
         return new EventResource($event);
     }
+
+    public function destroy(Event $event){
+        $this->eventService->delete($event);
+        return response()->json(["message"=>"Delete Successful"],200);
+    }
+
+    public function update(StoreEventRequest $request, Event $event){
+        $data = $request->validated();
+        $event = $this->eventService->update($event, $data);
+        return new EventResource($event);
+    }
 }
