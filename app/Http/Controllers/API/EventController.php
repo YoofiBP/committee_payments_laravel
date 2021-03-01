@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreEventRequest;
+use App\Http\Requests\EventRequest;
 use App\Http\Resources\EventCollection;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
@@ -20,7 +20,7 @@ class EventController extends Controller
         $this->authorizeResource(Event::class, 'event');
     }
 
-    public function store(StoreEventRequest $request){
+    public function store(EventRequest $request){
         $data = $request->validated();
         $event = $this->eventService->add($data);
         return (new EventResource($event))->response()->setStatusCode(201);
@@ -40,7 +40,7 @@ class EventController extends Controller
         return response()->json(["message"=>"Delete Successful"],200);
     }
 
-    public function update(StoreEventRequest $request, Event $event){
+    public function update(EventRequest $request, Event $event){
         $data = $request->validated();
         $event = $this->eventService->update($event, $data);
         return new EventResource($event);

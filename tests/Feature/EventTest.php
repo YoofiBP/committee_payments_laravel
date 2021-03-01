@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 use App\Models\Event;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -30,7 +31,7 @@ class EventTest extends TestCase
         $this->setUpFaker();
         $this->adminUser = User::factory()->create(["is_admin" => true]);
         $this->nonAdminUser = User::factory()->create();
-        $this->validEvent = ["name" => "Ubora", "venue" => "Unique Floral", "event_date" => "2021-02-28 12:50 PM", "flyer" => "flyerLink"];
+        $this->validEvent = ["name" => "Ubora", "venue" => "Unique Floral", "event_date" => Carbon::tomorrow()->format(config('constants.date_format')), "flyer" => "flyerLink"];
         $this->setUpDBCount = Event::all()->count();
     }
 
