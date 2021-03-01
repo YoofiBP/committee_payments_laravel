@@ -17,5 +17,9 @@ use App\Http\Controllers\API\EventController;
 */
 
 Route::apiResource('users', UserController::class);
-Route::apiResource('contributions', ContributionController::class);
 Route::apiResource('events', EventController::class);
+
+Route::prefix('contributions')->group(function () {
+    Route::post('/contribute/{event}', [ContributionController::class,'initiatePaymentProvider']);
+}
+);
