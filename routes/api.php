@@ -20,6 +20,7 @@ Route::apiResource('users', UserController::class);
 Route::apiResource('events', EventController::class);
 
 Route::prefix('contributions')->group(function () {
+    Route::get('/verify', [ContributionController::class, 'verify']);
     Route::post('/contribute/{event}', [ContributionController::class,'initiatePaymentProvider']);
 }
 );

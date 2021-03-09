@@ -21,7 +21,7 @@ class EventResource extends JsonResource
             'venue' => $this->venue,
             'event_date' => $this->event_date,
             'flyer' => $this->flyer,
-            'total_contribution' => $this->when(Auth::user()->isAdministrator(), $this->total_contribution)
+            'total_contribution' => $this->when(Auth::user() !== null && Auth::user()->isAdministrator(), $this->total_contribution)
         ];
     }
 

@@ -43,7 +43,7 @@ class EloquentUserService implements UserServiceInterface
         return Auth::guard('web')->attempt($credentials, $remember);
     }
 
-    public function updateContribution(Authenticatable | Model $user, array $contribution)
+    public function updateContribution(Model $user, array $contribution)
     {
        //
     }
